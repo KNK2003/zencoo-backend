@@ -1,6 +1,11 @@
 package com.zencoo.controller;
 
+// import com.zencoo.util.GoogleTokenVerifier;
+// import com.zencoo.util.JwtUtil;
+// import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.zencoo.service.AuthService;
+import com.zencoo.util.JwtUtil;
+import com.zencoo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +25,9 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginRequest) {
         String email = loginRequest.get("email");
@@ -32,6 +40,9 @@ public class AuthController {
         Map<String, Object> response = new HashMap<>();
         if (valid) {
             logger.info("Login successful for email: {}", email);
+            User user = authService.getUserByEmail(email).get();
+            String jwt = jwtUtil.generateToken(user.getId(), user.getEmail());
+            response.put("token", jwt);
             response.put("message", "Login successful");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
@@ -81,4 +92,33 @@ public class AuthController {
         resp.put("unique", unique);
         return ResponseEntity.ok(resp);
     }
+
+    // @PostMapping("/google-login")
+    // public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> body) {
+    //     String idToken = body.get("idToken");
+    //     if (idToken == null) {
+    //         return ResponseEntity.badRequest().body(Map.of("message", "Missing idToken"));
+    //     }
+    //
+    //     GoogleIdToken.Payload payload = GoogleTokenVerifier.verify(idToken);
+    //     if (payload == null) {
+    //         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid Google token"));
+    //     }
+    //
+    //     String email = payload.getEmail();
+    //     String name = (String) payload.get("name");
+    //
+    //     var userOpt = authService.getUserByEmail(email);
+    //     if (userOpt.isEmpty()) {
+    //         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", "User not registered"));
+    //     }
+    //
+    //     String jwt = JwtUtil.generateToken(email, name);
+    //     var user = userOpt.get();
+    //     return ResponseEntity.ok(Map.of(
+    //         "jwt", jwt,
+    //         "email", user.getEmail(),
+    //         "name", user.getFullName() != null ? user.getFullName() : name
+    //     ));
+    // }
 }
