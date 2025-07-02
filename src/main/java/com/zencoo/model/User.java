@@ -29,8 +29,17 @@ public class User {
     @Column(name = "community")
     private String community;
 
+    @Column(name = "bio")
+    private String bio;
+
+    @Column(name = "hometown")
+    private String hometown;
+
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "profile_pic")
+    private String profilePic;
 
     public User() {}
 
@@ -65,5 +74,14 @@ public class User {
     public String getCommunity() { return community; }
     public void setCommunity(String community) { this.community = community; }
 
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
+
+    public String getHometown() { return hometown; }
+    public void setHometown(String hometown) { this.hometown = hometown; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public String getProfilePic() { return profilePic; }
+    public void setProfilePic(String profilePic) { this.profilePic = profilePic; }
 }

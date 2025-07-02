@@ -6,15 +6,21 @@ public class UserProfileDto {
     private String email;
     private String fullName;
     private String doorNumber;
+    private String bio;
+    private String hometown; 
+    private String profilePic;
 
     // Constructors
     public UserProfileDto() {}
-    public UserProfileDto(Long id, String username, String email, String fullName, String doorNumber) {
+    public UserProfileDto(Long id, String username, String email, String fullName, String doorNumber, String bio, String hometown, String profilePic) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.fullName = fullName;
         this.doorNumber = doorNumber;
+        this.bio = bio;
+        this.hometown = hometown;
+        this.profilePic = profilePic;
     }
 
     // Getters and setters
@@ -32,4 +38,13 @@ public class UserProfileDto {
 
     public String getDoorNumber() { return doorNumber; }
     public void setDoorNumber(String doorNumber) { this.doorNumber = doorNumber; }
+
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
+
+    public String getHometown() { return hometown; }
+    public void setHometown(String hometown) { this.hometown = hometown; }
+
+    public String getProfilePic() { return profilePic; }
+    public void setProfilePic(String profilePic) { this.profilePic = profilePic; }
 }

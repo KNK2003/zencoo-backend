@@ -18,10 +18,46 @@ public class UserProfileService {
         Optional<User> userOpt = userRepository.findById(userId);
         return userOpt.map(user -> new UserProfileDto(
                 user.getId(),
-                user.getUsername(), // username
-                user.getEmail(),    // email
+                user.getUsername(),
+                user.getEmail(),
                 user.getFullName(),
-                user.getDoorNumber()
+                user.getDoorNumber(),
+                user.getBio(),
+                user.getHometown(),
+                user.getProfilePic() 
         ));
+    }
+
+    public Optional<User> updateUserBio(Long userId, String bio) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setBio(bio);
+            userRepository.save(user);
+            return Optional.of(user);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<User> updateUserHometown(Long userId, String hometown) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setHometown(hometown);
+            userRepository.save(user);
+            return Optional.of(user);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<User> updateUserProfilePic(Long userId, String profilePic) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setProfilePic(profilePic);
+            userRepository.save(user);
+            return Optional.of(user);
+        }
+        return Optional.empty();
     }
 }
