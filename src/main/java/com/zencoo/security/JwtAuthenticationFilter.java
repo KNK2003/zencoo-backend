@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null && jwtUtil.validateJwtToken(token)) {
             Long userId = jwtUtil.getUserIdFromJwt(token);
-            // Use your CustomUserDetails class, or just set the userId as principal
+            logger.info("JWT filter extracted userId={}", userId);
             CustomUserDetails userDetails = new CustomUserDetails(userId, "", "");
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, null);

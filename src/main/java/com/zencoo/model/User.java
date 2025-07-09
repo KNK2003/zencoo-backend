@@ -2,6 +2,7 @@ package com.zencoo.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "users")
@@ -40,6 +41,12 @@ public class User {
 
     @Column(name = "profile_pic")
     private String profilePic;
+
+    @Column(name = "last_username_change")
+    private Timestamp lastUsernameChange;
+
+    @Column(name = "header_bg")
+    private String headerBg;
 
     public User() {}
 
@@ -84,4 +91,15 @@ public class User {
 
     public String getProfilePic() { return profilePic; }
     public void setProfilePic(String profilePic) { this.profilePic = profilePic; }
+
+    public Timestamp getLastUsernameChange() { return lastUsernameChange; }
+    public void setLastUsernameChange(Timestamp lastUsernameChange) { this.lastUsernameChange = lastUsernameChange; }
+
+    public String getHeaderBg() {
+        return headerBg;
+    }
+
+    public void setHeaderBg(String headerBg) {
+        this.headerBg = headerBg;
+    }
 }

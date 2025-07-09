@@ -4,12 +4,14 @@ package com.zencoo.controller;
 // import com.zencoo.util.JwtUtil;
 // import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.zencoo.service.AuthService;
+import com.zencoo.service.LoginSessionService;
 import com.zencoo.util.JwtUtil;
 import com.zencoo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,9 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private LoginSessionService loginSessionService;
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginRequest) {
         String email = loginRequest.get("email");
@@ -41,6 +46,8 @@ public class AuthController {
         if (valid) {
             logger.info("Login successful for email: {}", email);
             User user = authService.getUserByEmail(email).get();
+            // Record login session
+            loginSessionService.recordLogin(user.getId());
             String jwt = jwtUtil.generateToken(user.getId(), user.getEmail());
             response.put("token", jwt);
             response.put("message", "Login successful");
@@ -121,4 +128,23 @@ public class AuthController {
     //         "name", user.getFullName() != null ? user.getFullName() : name
     //     ));
     // }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logout(@AuthenticationPrincipal Object principal) {
+        logger.info("Logout endpoint called. Principal: {}", principal);
+        Long userId = null;
+        if (principal instanceof com.zencoo.security.CustomUserDetails cud) {
+            userId = cud.getId();
+        }
+        logger.info("Extracted userId for logout: {}", userId);
+        Map<String, Object> response = new HashMap<>();
+        if (userId == null) {
+            logger.warn("Logout failed: Unauthorized (userId is null)");
+            response.put("message", "Unauthorized");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+        loginSessionService.recordLogout(userId);
+        response.put("message", "Logout successful");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

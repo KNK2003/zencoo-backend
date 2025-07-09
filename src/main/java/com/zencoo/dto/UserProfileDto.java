@@ -1,5 +1,7 @@
 package com.zencoo.dto;
 
+import java.sql.Timestamp;
+
 public class UserProfileDto {
     private Long id;
     private String username;
@@ -9,10 +11,13 @@ public class UserProfileDto {
     private String bio;
     private String hometown; 
     private String profilePic;
+    private Timestamp lastUsernameChange; // <-- Add this line
+    private String headerBg;
 
     // Constructors
     public UserProfileDto() {}
-    public UserProfileDto(Long id, String username, String email, String fullName, String doorNumber, String bio, String hometown, String profilePic) {
+    public UserProfileDto(Long id, String username, String email, String fullName, String doorNumber,
+                      String bio, String hometown, String profilePic, Timestamp lastUsernameChange, String headerBg) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -21,6 +26,8 @@ public class UserProfileDto {
         this.bio = bio;
         this.hometown = hometown;
         this.profilePic = profilePic;
+        this.lastUsernameChange = lastUsernameChange;
+        this.headerBg = headerBg;
     }
 
     // Getters and setters
@@ -47,4 +54,10 @@ public class UserProfileDto {
 
     public String getProfilePic() { return profilePic; }
     public void setProfilePic(String profilePic) { this.profilePic = profilePic; }
+
+    public Timestamp getLastUsernameChange() { return lastUsernameChange; }
+    public void setLastUsernameChange(Timestamp lastUsernameChange) { this.lastUsernameChange = lastUsernameChange; }
+
+    public String getHeaderBg() { return headerBg; }
+    public void setHeaderBg(String headerBg) { this.headerBg = headerBg; }
 }
