@@ -2,7 +2,7 @@ package com.zencoo.controller;
 
 import com.zencoo.model.User;
 import com.zencoo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,10 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/residents")
+@RequiredArgsConstructor
 public class ResidentsController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     // Add this above your class or method if using Spring Security
     @PreAuthorize("isAuthenticated()")

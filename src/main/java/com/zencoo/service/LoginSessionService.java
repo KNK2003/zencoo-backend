@@ -4,26 +4,23 @@ import com.zencoo.model.LoginSession;
 import com.zencoo.model.User;
 import com.zencoo.repository.LoginSessionRepository;
 import com.zencoo.repository.UserRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
 public class LoginSessionService {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginSessionService.class);
 
-    @Autowired
-    private LoginSessionRepository loginSessionRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final LoginSessionRepository loginSessionRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void recordLogin(Long userId) {

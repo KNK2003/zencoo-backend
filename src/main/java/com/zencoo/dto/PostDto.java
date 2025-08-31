@@ -1,7 +1,9 @@
 package com.zencoo.dto;
 
 import com.zencoo.model.Post;
+import lombok.Data;
 
+@Data
 public class PostDto {
     public Long id;
     public String imageUrl;

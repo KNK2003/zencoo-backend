@@ -1,13 +1,10 @@
 package com.zencoo.controller;
 
-// import com.zencoo.util.GoogleTokenVerifier;
-// import com.zencoo.util.JwtUtil;
-// import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.zencoo.service.AuthService;
 import com.zencoo.service.LoginSessionService;
 import com.zencoo.util.JwtUtil;
 import com.zencoo.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +17,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    @Autowired
-    private AuthService authService;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private LoginSessionService loginSessionService;
+    private final AuthService authService;
+    private final JwtUtil jwtUtil;
+    private final LoginSessionService loginSessionService;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginRequest) {

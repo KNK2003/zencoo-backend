@@ -3,7 +3,7 @@ package com.zencoo.service;
 import com.zencoo.dto.UserProfileDto;
 import com.zencoo.model.User;
 import com.zencoo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,13 +16,11 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
 @Service
+@RequiredArgsConstructor
 public class UserProfileService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private CloudinaryService cloudinaryService;
+    private final UserRepository userRepository;
+    private final CloudinaryService cloudinaryService;
 
     public Optional<UserProfileDto> getUserProfileById(Long userId) {
         Optional<User> userOpt = userRepository.findById(userId);

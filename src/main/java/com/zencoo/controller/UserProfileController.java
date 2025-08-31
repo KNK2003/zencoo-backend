@@ -1,9 +1,9 @@
 package com.zencoo.controller;
 
 import com.zencoo.dto.UserProfileDto;
-import com.zencoo.model.User; // <-- Add this line
+import com.zencoo.model.User;
 import com.zencoo.service.UserProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +15,10 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*") // Adjust origins as needed for your mobile frontend
+@RequiredArgsConstructor
 public class UserProfileController {
 
-    @Autowired
-    private UserProfileService userProfileService;
+    private final UserProfileService userProfileService;
 
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile(@AuthenticationPrincipal(expression = "id") Long userId) {
