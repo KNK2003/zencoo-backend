@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -72,8 +72,11 @@ public class AuthController {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
-        authService.registerUser(email, username, password, fullName, doorNumber, community);
+        User user = authService.registerUser(email, username, password, fullName, doorNumber, community);
+        String jwt = jwtUtil.generateToken(user.getId(), user.getEmail());
         response.put("message", "Registration successful");
+        response.put("token", jwt);
+        response.put("userId", user.getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -123,13 +126,8 @@ public class AuthController {
     // }
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, Object>> logout(@AuthenticationPrincipal Object principal) {
-        logger.info("Logout endpoint called. Principal: {}", principal);
-        Long userId = null;
-        if (principal instanceof com.zencoo.security.CustomUserDetails cud) {
-            userId = cud.getId();
-        }
-        logger.info("Extracted userId for logout: {}", userId);
+    public ResponseEntity<Map<String, Object>> logout(@RequestAttribute("userId") Long userId) {
+        logger.info("Logout endpoint called. userId: {}", userId);
         Map<String, Object> response = new HashMap<>();
         if (userId == null) {
             logger.warn("Logout failed: Unauthorized (userId is null)");

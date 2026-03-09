@@ -8,17 +8,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Map;
-import org.springframework.security.access.prepost.PreAuthorize;
+
 
 @RestController
-@RequestMapping("/api/residents")
+@RequestMapping("/residents")
 @RequiredArgsConstructor
 public class ResidentsController {
 
     private final UserRepository userRepository;
 
-    // Add this above your class or method if using Spring Security
-    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<Map<String, Object>> getResidents() {
         List<User> users = userRepository.findAll();

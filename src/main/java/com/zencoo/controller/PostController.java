@@ -8,14 +8,14 @@ import com.zencoo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/posts")
 @RequiredArgsConstructor
 public class PostController {
     private final PostRepository postRepository;
@@ -24,7 +24,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<?> createPost(
             @RequestBody Map<String, String> payload,
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @RequestAttribute("userId") Long userId
     ) {
         String imageUrl = payload.get("imageUrl");
         String caption = payload.get("caption");

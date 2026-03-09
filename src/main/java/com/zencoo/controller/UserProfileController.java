@@ -5,28 +5,30 @@ import com.zencoo.model.User;
 import com.zencoo.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
-@CrossOrigin(origins = "*") // Adjust origins as needed for your mobile frontend
 @RequiredArgsConstructor
 public class UserProfileController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserProfileController.class);
     private final UserProfileService userProfileService;
 
     @GetMapping("/profile")
-    public ResponseEntity<?> getProfile(@AuthenticationPrincipal(expression = "id") Long userId) {
+    public ResponseEntity<?> getProfile(@RequestAttribute("userId") Long userId) {
+        logger.info("GET /profile called, userId={}", userId);
+
         if (userId == null) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
+
         Optional<UserProfileDto> profileOpt = userProfileService.getUserProfileById(userId);
-        // If your service does not yet return lastUsernameChange, update it!
         return profileOpt
                 .<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
@@ -42,7 +44,7 @@ public class UserProfileController {
 
     @PatchMapping("/profile/bio")
     public ResponseEntity<?> updateBio(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @RequestAttribute("userId") Long userId,
             @RequestBody Map<String, String> body
     ) {
         if (userId == null) {
@@ -64,14 +66,14 @@ public class UserProfileController {
                     user.getHometown(),
                     user.getProfilePic(),
                     user.getLastUsernameChange(),
-                    user.getHeaderBg() // <-- Add this argument
+                    user.getHeaderBg()
                 )))
                 .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
     }
 
     @PatchMapping("/profile/hometown")
     public ResponseEntity<?> updateHometown(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @RequestAttribute("userId") Long userId,
             @RequestBody Map<String, String> body
     ) {
         if (userId == null) {
@@ -93,14 +95,14 @@ public class UserProfileController {
                     user.getHometown(),
                     user.getProfilePic(),
                     user.getLastUsernameChange(),
-                    user.getHeaderBg() // <-- Add this argument
+                    user.getHeaderBg()
                 )))
                 .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
     }
 
     @PatchMapping("/profile/profile-pic")
     public ResponseEntity<?> updateProfilePic(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @RequestAttribute("userId") Long userId,
             @RequestBody Map<String, String> body
     ) {
         if (userId == null) {
@@ -122,14 +124,14 @@ public class UserProfileController {
                     user.getHometown(),
                     user.getProfilePic(),
                     user.getLastUsernameChange(),
-                    user.getHeaderBg() // <-- Add this argument
+                    user.getHeaderBg()
                 )))
                 .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
     }
 
     @PatchMapping("/profile")
     public ResponseEntity<?> updateProfile(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @RequestAttribute("userId") Long userId,
             @RequestBody Map<String, String> body
     ) {
         String displayName = body.get("displayName");
@@ -151,7 +153,7 @@ public class UserProfileController {
                     user.getHometown(),
                     user.getProfilePic(),
                     user.getLastUsernameChange(),
-                    user.getHeaderBg() // <-- Add this argument
+                    user.getHeaderBg()
                 )))
                 .orElseGet(() -> ResponseEntity.status(404).body("User not found"));
         } catch (ResponseStatusException ex) {
@@ -162,7 +164,7 @@ public class UserProfileController {
     @PatchMapping("/profile/header-bg")
     public ResponseEntity<?> updateHeaderBg(
             @RequestBody Map<String, String> body,
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @RequestAttribute("userId") Long userId
     ) {
         if (userId == null) {
             return ResponseEntity.status(401).body("Unauthorized");
