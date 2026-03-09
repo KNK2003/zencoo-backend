@@ -3,6 +3,7 @@ package com.zencoo.service;
 import com.zencoo.model.User;
 import com.zencoo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private final UserRepository userRepository;
 
@@ -25,8 +27,21 @@ public class AuthService {
             return false;
         }
         String dbPassword = userOpt.get().getPasswordHash();
-        logger.info("Comparing input password '{}' with db password '{}'", password, dbPassword);
-        return dbPassword.equals(password);
+        logger.info("DB password hash for email {}: {}", email, dbPassword);
+        logger.info("Input password for email {}: {}", email, password);
+        
+        boolean matches;
+        try {
+            matches = passwordEncoder.matches(password, dbPassword);
+            logger.info("Password matches for email {}: {}", email, matches);
+        } catch (Exception e) {
+            logger.error("Error during password matching for email {}: {}", email, e.getMessage());
+            // Fallback to plain text comparison for legacy passwords
+            matches = password.equals(dbPassword);
+            logger.info("Fallback plain text comparison for email {}: {}", email, matches);
+        }
+        
+        return matches;
     }
 
     public boolean isEmailRegistered(String email) {
@@ -37,11 +52,11 @@ public class AuthService {
         return !userRepository.existsByUsername(username);
     }
 
-    public User registerUser(String email, String username, String passwordHash, String fullName, String doorNumber, String community) {
+    public User registerUser(String email, String username, String password, String fullName, String doorNumber, String community) {
         User user = new User();
         user.setEmail(email);
         user.setUsername(username);
-        user.setPasswordHash(passwordHash);
+        user.setPasswordHash(passwordEncoder.encode(password));
         user.setFullName(fullName);
         user.setDoorNumber(doorNumber);
         user.setCommunity(community);
